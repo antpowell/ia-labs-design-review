@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA LABS — Concept C: Mission Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c141f;
+    --bg2:#101c2a;
+    --panel:#0f1a27;
+    --line:rgba(46,204,113,.22);
+    --line-dim:rgba(120,160,190,.14);
+    --green:#2ecc71;
+    --green-dim:rgba(46,204,113,.55);
+    --text:#dce8f2;
+    --muted:#7f93a6;
+    --amber:#ffc72c;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --sans:'Space Grotesk',system-ui,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:var(--sans);background:var(--bg);color:var(--text);
+    background-image:radial-gradient(rgba(120,160,190,.10) 1px,transparent 1.4px);
+    background-size:26px 26px;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--green);color:#04140b;}
+  a{color:inherit;}
+
+  /* ---------- frame & scanline ---------- */
+  .scanline{
+    position:fixed;inset:0;pointer-events:none;z-index:99;
+    background:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px);
+    mix-blend-mode:overlay;
+  }
+  .frame-corner{position:fixed;width:22px;height:22px;z-index:98;pointer-events:none;border:2px solid var(--line);}
+  .fc-tl{top:10px;left:10px;border-right:0;border-bottom:0;}
+  .fc-tr{top:10px;right:10px;border-left:0;border-bottom:0;}
+  .fc-bl{bottom:10px;left:10px;border-right:0;border-top:0;}
+  .fc-br{bottom:10px;right:10px;border-left:0;border-top:0;}
+
+  /* ---------- status bar ---------- */
+  .statusbar{
+    display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;color:var(--muted);
+    padding:.55rem 1.6rem;border-bottom:1px solid var(--line-dim);
+    text-transform:uppercase;
+  }
+  .statusbar .live{color:var(--green);}
+  .statusbar .live::before{content:"●";margin-right:.5em;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.25;}}
+
+  /* ---------- nav ---------- */
+  nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.1rem 2.4rem;border-bottom:1px solid var(--line-dim);
+    position:sticky;top:0;background:rgba(12,20,31,.85);backdrop-filter:blur(12px);z-index:60;
+  }
+  .wordmark{font-weight:700;font-size:1.25rem;letter-spacing:.06em;display:flex;align-items:center;gap:.7rem;}
+  .wordmark .sq{
+    width:12px;height:12px;background:var(--green);
+    box-shadow:0 0 14px var(--green);
+    animation:pulse 2.6s infinite;
+  }
+  .wordmark .ver{font-family:var(--mono);font-size:.62rem;color:var(--muted);letter-spacing:.18em;font-weight:400;}
+  .navlinks{display:flex;gap:2rem;list-style:none;font-family:var(--mono);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;}
+  .navlinks a{text-decoration:none;color:var(--muted);transition:color .25s,text-shadow .25s;}
+  .navlinks a:hover{color:var(--green);text-shadow:0 0 12px var(--green-dim);}
+  .navlinks a.cta{color:var(--green);border:1px solid var(--line);padding:.45rem 1rem;transition:all .25s;}
+  .navlinks a.cta:hover{background:var(--green);color:#04140b;text-shadow:none;box-shadow:0 0 24px var(--green-dim);}
+
+  /* ---------- hero ---------- */
+  .hero{
+    display:grid;grid-template-columns:1.05fr .95fr;gap:3rem;align-items:center;
+    max-width:1240px;margin:0 auto;padding:5.5rem 2.4rem 4.5rem;position:relative;
+  }
+  .sysline{font-family:var(--mono);font-size:.74rem;color:var(--green);letter-spacing:.1em;margin-bottom:1.4rem;}
+  .sysline .prompt{color:var(--amber);}
+  .cursor{display:inline-block;width:9px;height:1.1em;background:var(--green);vertical-align:text-bottom;animation:blink 1s steps(1) infinite;margin-left:2px;}
+  @keyframes blink{50%{opacity:0;}}
+  .hero h1{
+    font-size:clamp(2.9rem,5.8vw,5rem);font-weight:700;line-height:1.02;letter-spacing:-.02em;
+  }
+  .hero h1 .glow{color:var(--green);text-shadow:0 0 34px rgba(46,204,113,.4);}
+  .hero .sub{margin-top:1.5rem;color:var(--muted);font-size:1.06rem;line-height:1.7;max-width:34rem;}
+  .hero .actions{margin-top:2.4rem;display:flex;gap:1.2rem;flex-wrap:wrap;}
+  .btn{
+    font-family:var(--mono);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;
+    padding:1rem 2rem;position:relative;transition:all .25s;display:inline-block;cursor:pointer;background:none;
+  }
+  .btn.launch{color:#04140b;background:var(--green);box-shadow:0 0 30px rgba(46,204,113,.35);}
+  .btn.launch:hover{box-shadow:0 0 48px rgba(46,204,113,.6);transform:translateY(-2px);}
+  .btn.diag{color:var(--green);border:1px solid var(--line);}
+  .btn.diag:hover{background:rgba(46,204,113,.08);border-color:var(--green);}
+  .viz{
+    position:relative;border:1px solid var(--line);background:var(--panel);
+  }
+  .viz .bar{
+    display:flex;justify-content:space-between;font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;
+    color:var(--muted);padding:.55rem .9rem;border-bottom:1px solid var(--line-dim);text-transform:uppercase;
+  }
+  .viz .bar .dots{display:flex;gap:.4rem;}
+  .viz .bar .dots i{width:8px;height:8px;border-radius:50%;background:var(--line);display:block;}
+  .viz img{width:100%;display:block;animation:glowpulse 5s ease-in-out infinite;}
+  @keyframes glowpulse{
+    0%,100%{filter:brightness(1);}
+    50%{filter:brightness(1.16);}
+  }
+  .viz .sweep{
+    position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent);
+    opacity:.7;animation:sweep 6s linear infinite;pointer-events:none;
+  }
+  @keyframes sweep{0%{top:8%;}100%{top:96%;}}
+
+  /* ---------- readouts (stats) ---------- */
+  .readouts{max-width:1240px;margin:0 auto;padding:0 2.4rem 5rem;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+  .ro{
+    border:1px solid var(--line);background:var(--panel);padding:1.8rem 1.7rem;position:relative;
+    transition:border-color .3s,box-shadow .3s;
+  }
+  .ro::before,.ro::after{
+    content:"";position:absolute;width:14px;height:14px;border:2px solid var(--green);opacity:.8;
+  }
+  .ro::before{top:-2px;left:-2px;border-right:0;border-bottom:0;}
+  .ro::after{bottom:-2px;right:-2px;border-left:0;border-top:0;}
+  .ro:hover{border-color:var(--green);box-shadow:0 0 30px rgba(46,204,113,.15);}
+  .ro .k{font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;}
+  .ro .v{font-family:var(--sans);font-weight:700;font-size:clamp(2.6rem,4.6vw,3.8rem);color:var(--green);margin:.6rem 0 .2rem;text-shadow:0 0 26px rgba(46,204,113,.35);}
+  .ro .d{font-size:.86rem;color:var(--muted);line-height:1.55;}
+
+  /* ---------- module list ---------- */
+  section{padding:5rem 2.4rem;border-top:1px solid var(--line-dim);}
+  .wrap{max-width:1240px;margin:0 auto;}
+  .sec-label{font-family:var(--mono);font-size:.7rem;letter-spacing:.24em;color:var(--green);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:.9rem;}
+  .sec-label::after{content:"";flex:1;height:1px;background:var(--line-dim);}
+  .sec-title{font-size:clamp(1.9rem,3.6vw,3rem);font-weight:700;letter-spacing:-.02em;margin-bottom:2.8rem;}
+  .mod{
+    display:grid;grid-template-columns:auto 1fr auto;gap:1.6rem;align-items:center;
+    padding:1.35rem 1rem;border-bottom:1px solid var(--line-dim);
+    font-family:var(--mono);transition:background .25s,padding-left .25s;
+  }
+  .mod:hover{background:rgba(46,204,113,.05);padding-left:1.6rem;}
+  .mod .cmd{color:var(--green);font-size:.92rem;}
+  .mod .cmd::before{content:"> ";color:var(--muted);}
+  .mod .info{font-size:.78rem;color:var(--muted);letter-spacing:.06em;}
+  .mod .st{font-size:.66rem;letter-spacing:.18em;color:var(--amber);border:1px solid rgba(255,199,44,.35);padding:.3rem .7rem;text-transform:uppercase;white-space:nowrap;}
+  .mod .st.ok{color:var(--green);border-color:var(--line);}
+
+  /* ---------- log (blog) ---------- */
+  .logs{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+  .log{
+    border:1px solid var(--line-dim);background:var(--panel);padding:1.6rem;text-decoration:none;display:block;
+    transition:border-color .3s,transform .3s;
+  }
+  .log:hover{border-color:var(--green);transform:translateY(-4px);}
+  .log .ts{font-family:var(--mono);font-size:.66rem;color:var(--muted);letter-spacing:.14em;}
+  .log .tag{color:var(--green);font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;float:right;}
+  .log h3{font-size:1.15rem;margin:.9rem 0 .6rem;font-weight:700;line-height:1.3;}
+  .log p{font-size:.88rem;color:var(--muted);line-height:1.6;}
+
+  /* ---------- transmit (donate) ---------- */
+  .transmit{
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    background:
+      radial-gradient(700px 300px at 50% 120%,rgba(46,204,113,.16),transparent),
+      var(--bg2);
+    text-align:center;padding:6.5rem 2.4rem;
+  }
+  .transmit h2{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:700;letter-spacing:-.02em;}
+  .transmit h2 span{color:var(--green);text-shadow:0 0 30px rgba(46,204,113,.45);}
+  .transmit p{color:var(--muted);max-width:38rem;margin:1.4rem auto 2.4rem;line-height:1.7;}
+  .telemetry{font-family:var(--mono);font-size:.68rem;color:var(--muted);letter-spacing:.16em;margin-top:2.2rem;text-transform:uppercase;}
+  .telemetry b{color:var(--green);font-weight:500;}
+
+  /* ---------- footer ---------- */
+  footer{padding:3.5rem 2.4rem 2rem;border-top:1px solid var(--line-dim);}
+  footer .wrap{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:2.5rem;}
+  footer h6{font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;color:var(--green);text-transform:uppercase;margin-bottom:1.1rem;}
+  footer p,footer a{font-size:.88rem;color:var(--muted);text-decoration:none;line-height:1.8;display:block;}
+  footer a:hover{color:var(--green);}
+  .cmdline{font-family:var(--mono);font-size:.8rem;color:var(--muted);margin-top:1.4rem;}
+  .cmdline b{color:var(--green);font-weight:500;}
+  .base{max-width:1240px;margin:3rem auto 0;padding-top:1.4rem;border-top:1px solid var(--line-dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.8rem;font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;}
+
+  .rise{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s cubic-bezier(.215,.61,.355,1);}
+  .rise.in{opacity:1;transform:none;}
+
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr;padding-top:3.5rem;}
+    .grid3,.logs{grid-template-columns:1fr;}
+    footer .wrap{grid-template-columns:1fr;}
+    .navlinks li:not(:last-child){display:none;}
+    .mod{grid-template-columns:1fr;gap:.5rem;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+    .rise{opacity:1;transform:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="scanline" aria-hidden="true"></div>
+<i class="frame-corner fc-tl"></i><i class="frame-corner fc-tr"></i><i class="frame-corner fc-bl"></i><i class="frame-corner fc-br"></i>
+
+<div class="statusbar">
+  <span class="live">SYS.ONLINE</span>
+  <span>HOUSTON, TX · 29.76°N 95.36°W</span>
+  <span id="clock">--:--:--</span>
+  <span>MISSION: STEM FOR ALL</span>
+</div>
+
+<nav>
+  <div class="wordmark"><span class="sq"></span>IA&nbsp;LABS <span class="ver">v2.0 // REBUILD</span></div>
+  <ul class="navlinks">
+    <li><a href="#">About</a></li>
+    <li><a href="#">IA Vision</a></li>
+    <li><a href="#">Gallery</a></li>
+    <li><a href="#">Info</a></li>
+    <li><a href="#">Resources</a></li>
+    <li><a class="cta" href="#">$ Donate</a></li>
+  </ul>
+</nav>
+
+<header class="hero">
+  <div>
+    <div class="sysline"><span class="prompt">ia-labs:~$</span> <span id="typer"></span><span class="cursor"></span></div>
+    <h1 class="rise">Engineering the next generation of <span class="glow">builders.</span></h1>
+    <p class="sub rise">A veteran-led nonprofit deploying robotics programs, STEM kits, and a mobile maker space to underserved communities. Free. Hands-on. Grades 4–10.</p>
+    <div class="actions rise">
+      <a class="btn launch" href="#">Initiate Donation</a>
+      <a class="btn diag" href="#">View Mission Log</a>
+    </div>
+  </div>
+  <div class="viz rise">
+    <div class="bar"><span>unit: MASCOT-01 // schematic</span><span class="dots"><i></i><i></i><i></i></span></div>
+    <img src="assets/robot-blueprint.png" alt="Blueprint-style line art of a friendly robot">
+    <div class="sweep"></div>
+  </div>
+</header>
+
+<div class="readouts">
+  <div class="grid3">
+    <div class="ro rise">
+      <div class="k">READOUT.01 — REACH</div>
+      <div class="v"><span data-count="500">0</span>+</div>
+      <div class="d">Lives impacted through clubs, camps, and community pop-ups.</div>
+    </div>
+    <div class="ro rise">
+      <div class="k">READOUT.02 — OPERATIONS</div>
+      <div class="v"><span data-count="20">0</span>+</div>
+      <div class="d">Active programs with schools, HBCU partners, and neighborhoods.</div>
+    </div>
+    <div class="ro rise">
+      <div class="k">READOUT.03 — LEADERSHIP</div>
+      <div class="v"><span data-count="100">0</span>%</div>
+      <div class="d">Veteran-led. Service doesn't stop at discharge.</div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="sec-label rise">MODULES // PROGRAMS</div>
+    <h2 class="sec-title rise">Deployed capabilities</h2>
+    <div class="mod rise">
+      <span class="cmd">run robotics_club.exe</span>
+      <span class="info">Weekly builds · drive, code, compete · grades 4–10</span>
+      <span class="st ok">ACTIVE</span>
+    </div>
+    <div class="mod rise">
+      <span class="cmd">run stem_kits.exe</span>
+      <span class="info">Take-home projects — fans, LED labs, bridges, rockets</span>
+      <span class="st ok">ACTIVE</span>
+    </div>
+    <div class="mod rise">
+      <span class="cmd">run mobile_makerspace.exe</span>
+      <span class="info">Workshop van · tools, 3D printers, mentors on site</span>
+      <span class="st">EN ROUTE</span>
+    </div>
+    <div class="mod rise">
+      <span class="cmd">run popup_stand.exe</span>
+      <span class="info">Weekend booth builds at community events</span>
+      <span class="st ok">ACTIVE</span>
+    </div>
+    <div class="mod rise">
+      <span class="cmd">run hbcu_partnerships.exe</span>
+      <span class="info">Mentorship pipelines with historically Black universities</span>
+      <span class="st ok">ACTIVE</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-label rise">MISSION LOG // BLOG</div>
+    <h2 class="sec-title rise">Latest transmissions</h2>
+    <div class="logs">
+      <a class="log rise" href="#">
+        <span class="ts">2025.03.28</span><span class="tag">ALT-ENERGY</span>
+        <h3>Popsicle Fan Project</h3>
+        <p>Blade geometry, battery packs, and sixty very serious young engineers.</p>
+      </a>
+      <a class="log rise" href="#">
+        <span class="ts">2025.02.14</span><span class="tag">TECH</span>
+        <h3>Windy Sticky Fan-tastic</h3>
+        <p>Duct tape, cardboard, and an introduction to aerodynamics that stuck.</p>
+      </a>
+      <a class="log rise" href="#">
+        <span class="ts">2025.01.20</span><span class="tag">TECH</span>
+        <h3>LED Light Lab</h3>
+        <p>Circuits, resistors, and the exact moment a room full of kids lights up.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="transmit">
+  <h2 class="rise">Signal received.<br><span>Fuel the mission.</span></h2>
+  <p class="rise">Every donation converts directly into parts, kits, and van miles. Overhead is covered by our founders — your contribution goes straight to the workshop floor.</p>
+  <a class="btn launch rise" href="#">Transmit Donation via Square</a>
+  <div class="telemetry rise">LAST SYNC: <b id="sync">OK</b> · UPTIME: <b>99.98%</b> · NEXT POP-UP: <b>5TH WARD</b></div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <h6>IA LABS // HQ</h6>
+      <p>A 501(c)(3) nonprofit. Mobile maker space serving underserved communities — founded by Texas Southern University alumni.</p>
+      <div class="cmdline"><b>ia-labs:~$</b> subscribe --newsletter<br><span style="color:var(--muted)">email: <span style="color:var(--green)">[ you@email.com ]</span> <span class="cursor" style="height:.95em;"></span></span></div>
+    </div>
+    <div>
+      <h6>NAVIGATE</h6>
+      <a href="#">About</a><a href="#">IA Vision</a><a href="#">Photo Gallery</a><a href="#">Resources</a>
+    </div>
+    <div>
+      <h6>PARTICIPATE</h6>
+      <a href="#">Donate</a><a href="#">Event Registration</a><a href="#">Liability Waiver</a><a href="#">Contact</a>
+    </div>
+  </div>
+  <div class="base">
+    <span>© <span id="yr">2026</span> IA LABS — ALL SYSTEMS NOMINAL</span>
+    <span>BUILD 2026.10 · MADE IN HOUSTON</span>
+  </div>
+</footer>
+
+<script>
+  // typewriter
+  const lines = ["boot ia-labs --mission=stem-for-all","load programs --grades 4-10","deploy makerspace --target=houston"];
+  const typer = document.getElementById('typer');
+  let li = 0;
+  function typeLine(){
+    const text = lines[li]; let i = 0;
+    (function step(){
+      typer.textContent = text.slice(0,++i);
+      if(i < text.length){ setTimeout(step, 42 + Math.random()*46); }
+      else { setTimeout(()=>{ li=(li+1)%lines.length; typeLine(); }, 2400); }
+    })();
+  }
+  typeLine();
+
+  // clock
+  const clock = document.getElementById('clock');
+  setInterval(()=>{ clock.textContent = new Date().toLocaleTimeString('en-US',{hour12:false}); }, 1000);
+
+  // count-up
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(!e.isIntersecting) return;
+      const el=e.target,target=+el.dataset.count,t0=performance.now(),dur=1500;
+      (function tick(t){
+        const p=Math.min((t-t0)/dur,1),ease=1-Math.pow(1-p,4);
+        el.textContent=String(Math.round(target*ease)).padStart(3,'0');
+        if(p<1) requestAnimationFrame(tick);
+      })(t0);
+      io.unobserve(el);
+    });
+  },{threshold:.5});
+  document.querySelectorAll('[data-count]').forEach(el=>io.observe(el));
+
+  // reveal
+  const rio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target);}}),{threshold:.12});
+  document.querySelectorAll('.rise').forEach(el=>rio.observe(el));
+
+  document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

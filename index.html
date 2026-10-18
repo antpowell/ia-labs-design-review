@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA LABS — Homepage Design Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f7f2e9;
+    --ink:#1a2b3c;
+    --green:#2e9e5b;
+    --terra:#d2603a;
+    --line:rgba(26,43,60,.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);padding:3rem 1.6rem 4rem;}
+  .wrap{max-width:1180px;margin:0 auto;}
+  header{margin-bottom:2.6rem;}
+  .eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:.9rem;}
+  h1{font-family:'Bricolage Grotesque';font-size:clamp(1.9rem,4vw,2.9rem);letter-spacing:-.02em;line-height:1.05;}
+  header p{margin-top:.8rem;color:#51636f;max-width:44rem;line-height:1.6;}
+  .hint{display:inline-block;margin-top:1.1rem;font-size:.85rem;font-weight:600;background:#fff;border:1px solid var(--line);padding:.5rem 1rem;border-radius:999px;color:#51636f;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:1.8rem;}
+  .card{
+    background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;text-decoration:none;color:inherit;
+    display:flex;flex-direction:column;transition:transform .3s cubic-bezier(.215,.61,.355,1),box-shadow .3s;
+  }
+  .card:hover{transform:translateY(-6px);box-shadow:0 24px 48px -24px rgba(26,43,60,.35);}
+  .shot{height:230px;overflow:hidden;position:relative;}
+  .shot img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;transition:transform .5s;}
+  .card:hover .shot img{transform:scale(1.04);}
+  .shot .letter{
+    position:absolute;top:14px;left:14px;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+    font-family:'Bricolage Grotesque';font-weight:800;color:#fff;font-size:1.2rem;box-shadow:0 6px 14px -4px rgba(0,0,0,.35);
+  }
+  .body{padding:1.5rem 1.6rem 1.7rem;display:flex;flex-direction:column;gap:.6rem;flex:1;}
+  .body h2{font-family:'Bricolage Grotesque';font-size:1.45rem;letter-spacing:-.01em;}
+  .vibe{display:flex;gap:.5rem;flex-wrap:wrap;}
+  .vibe span{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .7rem;border-radius:999px;background:#f2ece0;color:#6b5d45;}
+  .body p{font-size:.93rem;line-height:1.6;color:#51636f;flex:1;}
+  .open{font-weight:700;font-size:.9rem;color:var(--green);display:flex;align-items:center;gap:.4rem;}
+  .card:hover .open{text-decoration:underline;}
+  @media (max-width:800px){.grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">IA LABS rebuild · design exploration</div>
+    <h1>Four homepage concepts — pick a direction</h1>
+    <p>Each is a full, self-contained homepage mockup built around your notes: playful, modern, bright, motion-rich, generous with space. The same content and structure underlies all four, so you're comparing pure look &amp; feel.</p>
+    <span class="hint">Open each in a browser — hover, scroll, and resize to feel the motion.</span>
+  </header>
+
+  <div class="grid">
+    <a class="card" href="a-sticker-lab.html">
+      <div class="shot">
+        <span class="letter" style="background:#ff5800;">A</span>
+        <img src="assets/mascot-sticker.png" alt="Sticker Lab concept preview">
+      </div>
+      <div class="body">
+        <h2>Sticker Lab</h2>
+        <div class="vibe"><span>Candy-bright</span><span>Chunky type</span><span>Maximal fun</span></div>
+        <p>The boldest of the four. Cream paper canvas, thick ink outlines, hard offset shadows, a wiggling robot mascot with sticker badges, blob-shaped buttons, and marquee tickers. Closest in spirit to the Bitta reference — a site that feels like a really good sticker sheet.</p>
+        <span class="open">Open mockup →</span>
+      </div>
+    </a>
+
+    <a class="card" href="b-impact-editorial.html">
+      <div class="shot">
+        <span class="letter" style="background:#2e9e5b;">B</span>
+        <img src="assets/illustration-editorial.png" alt="Impact Editorial concept preview">
+      </div>
+      <div class="body">
+        <h2>Impact Editorial</h2>
+        <div class="vibe"><span>Warm &amp; calm</span><span>Big numbers</span><span>Story-first</span></div>
+        <p>The most donor-and-parent-facing. Warm cream tones, a flat illustrated hero, huge count-up statistics (500+ / 20+ / 100%), an indexed program list with hover fills, and quiet underline micro-interactions. Closest to the illustration reference — lots of air, nothing cluttered.</p>
+        <span class="open">Open mockup →</span>
+      </div>
+    </a>
+
+    <a class="card" href="c-mission-control.html">
+      <div class="shot">
+        <span class="letter" style="background:#101c2a;">C</span>
+        <img src="assets/robot-blueprint.png" alt="Mission Control concept preview">
+      </div>
+      <div class="body">
+        <h2>Mission Control</h2>
+        <div class="vibe"><span>Dark mode</span><span>Sci-fi HUD</span><span>Terminal motion</span></div>
+        <p>The "cool older sibling" option. Deep-navy blueprint aesthetic with a glowing circuit-robot schematic, terminal typewriter hero, HUD-cornered stat readouts that count up, and programs listed like running system modules. Reads modern and techy while staying friendly.</p>
+        <span class="open">Open mockup →</span>
+      </div>
+    </a>
+
+    <a class="card" href="d-workshop-scrapbook.html">
+      <div class="shot">
+        <span class="letter" style="background:#d2603a;">D</span>
+        <img src="assets/workshop-scrapbook.png" alt="Workshop Scrapbook concept preview">
+      </div>
+      <div class="body">
+        <h2>Workshop Scrapbook</h2>
+        <div class="vibe"><span>Hand-crafted</span><span>Craft paper</span><span>Polaroids</span></div>
+        <p>The most human and handmade. Kraft-paper background, washi-taped polaroids that straighten when you hover them, handwritten captions, a ruled index-card stats section, and a perforated donation ticket. Feels like the community bulletin board at an actual maker space.</p>
+        <span class="open">Open mockup →</span>
+      </div>
+    </a>
+  </div>
+</div>
+</body>
+</html>

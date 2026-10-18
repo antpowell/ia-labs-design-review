@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA LABS — Concept B: Impact Editorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f7f2e9;
+    --ink:#1a2b3c;
+    --green:#2e9e5b;
+    --teal:#12836f;
+    --orange:#e8722a;
+    --line:rgba(26,43,60,.16);
+    --ease:cubic-bezier(.215,.61,.355,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  ::selection{background:var(--green);color:#fff;}
+  h1,h2,h3{font-family:'Bricolage Grotesque',system-ui,sans-serif;letter-spacing:-.02em;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 2.2rem;}
+
+  /* ---------- nav ---------- */
+  header.top{
+    position:sticky;top:0;z-index:50;background:rgba(247,242,233,.88);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:76px;}
+  .wordmark{font-family:'Bricolage Grotesque';font-weight:800;font-size:1.35rem;letter-spacing:-.02em;display:flex;align-items:center;gap:.55rem;}
+  .wordmark .leaf{width:26px;height:26px;border-radius:50% 50% 50% 4px;background:var(--green);display:inline-block;transform:rotate(45deg);}
+  .top nav{display:flex;gap:2.2rem;align-items:center;}
+  .top nav a{
+    text-decoration:none;color:var(--ink);font-size:.82rem;font-weight:600;
+    text-transform:uppercase;letter-spacing:.14em;position:relative;padding:4px 0;
+  }
+  .top nav a::after{
+    content:"";position:absolute;left:0;bottom:0;width:100%;height:2px;background:var(--green);
+    transform:scaleX(0);transform-origin:right;transition:transform .35s var(--ease);
+  }
+  .top nav a:hover::after{transform:scaleX(1);transform-origin:left;}
+  .give{
+    background:var(--ink);color:#fff!important;padding:.7rem 1.4rem!important;border-radius:999px;
+    transition:background .3s;
+  }
+  .give:hover{background:var(--green);}
+  .give::after{display:none;}
+
+  /* ---------- hero ---------- */
+  .hero{padding:5.5rem 0 0;}
+  .hero .grid{display:grid;grid-template-columns:1.25fr .75fr;gap:3rem;align-items:end;}
+  .eyebrow{
+    font-size:.8rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);
+    display:flex;align-items:center;gap:.8rem;margin-bottom:1.6rem;
+  }
+  .eyebrow::before{content:"";width:34px;height:2px;background:var(--teal);}
+  .hero h1{font-size:clamp(2.8rem,5.6vw,4.8rem);font-weight:800;line-height:1.02;}
+  .hero h1 .grow{
+    background:linear-gradient(transparent 62%,rgba(46,158,91,.35) 62%);
+  }
+  .hero .lede{margin-top:1.6rem;font-size:1.08rem;line-height:1.65;color:#44576b;max-width:33rem;}
+  .hero .actions{margin-top:2.2rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;}
+  .btn{
+    display:inline-block;text-decoration:none;font-weight:600;font-size:.95rem;
+    padding:.95rem 1.9rem;border-radius:999px;transition:all .3s var(--ease);cursor:pointer;border:0;
+  }
+  .btn.solid{background:var(--green);color:#fff;}
+  .btn.solid:hover{background:var(--ink);}
+  .btn.ghost{color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink);}
+  .btn.ghost:hover{box-shadow:inset 0 0 0 1.5px var(--green);color:var(--green);}
+  .hero-side{text-align:right;padding-bottom:.4rem;}
+  .hero-side .big{
+    font-family:'Bricolage Grotesque';font-weight:800;font-size:clamp(4.5rem,8vw,7.5rem);
+    color:var(--green);line-height:.9;letter-spacing:-.04em;
+  }
+  .hero-side .cap{font-size:.85rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#6b7d8f;margin-top:.6rem;}
+  .hero-banner{margin-top:4rem;border-radius:28px;overflow:hidden;border:1px solid var(--line);}
+  .hero-banner img{width:100%;display:block;aspect-ratio:1536/560;object-fit:cover;object-position:center 38%;}
+
+  /* ---------- ticker stats ---------- */
+  .stats{padding:6rem 0;}
+  .stats .row{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    border-top:1px solid var(--line);
+  }
+  .stat{padding:2.6rem 2rem 2.6rem 0;border-bottom:1px solid var(--line);}
+  .stat + .stat{border-left:1px solid var(--line);padding-left:2.4rem;}
+  .stat .n{font-family:'Bricolage Grotesque';font-weight:800;font-size:clamp(3.4rem,6vw,5.6rem);line-height:.95;letter-spacing:-.03em;}
+  .stat:nth-child(1) .n{color:var(--green);}
+  .stat:nth-child(2) .n{color:var(--teal);}
+  .stat:nth-child(3) .n{color:var(--orange);}
+  .stat .l{margin-top:.9rem;font-size:.92rem;font-weight:600;color:#44576b;max-width:16rem;line-height:1.5;}
+
+  /* ---------- split sections ---------- */
+  section.blk{padding:5.5rem 0;}
+  section.blk.tint{background:#efe8db;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:4.5rem;align-items:center;}
+  .split h2{font-size:clamp(2rem,3.8vw,3.1rem);font-weight:800;line-height:1.06;}
+  .split h2 em{font-style:normal;color:var(--green);}
+  .split p{margin-top:1.3rem;line-height:1.7;color:#44576b;font-size:1.02rem;}
+  .split .actions{margin-top:2rem;}
+  .clipword{
+    font-family:'Bricolage Grotesque';font-weight:800;text-transform:uppercase;
+    font-size:clamp(3.4rem,8.5vw,7rem);line-height:.92;letter-spacing:-.02em;
+    background-image:linear-gradient(115deg,var(--green) 20%,var(--teal) 60%,var(--orange) 105%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .mini-illus{border-radius:24px;overflow:hidden;border:1px solid var(--line);box-shadow:0 24px 48px -28px rgba(26,43,60,.35);}
+  .mini-illus img{width:100%;display:block;}
+
+  /* ---------- program index ---------- */
+  .plist{border-top:1px solid var(--line);}
+  .prow{
+    display:grid;grid-template-columns:90px 1fr auto;gap:2rem;align-items:center;
+    padding:1.9rem .6rem;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink);
+    position:relative;isolation:isolate;overflow:hidden;
+  }
+  .prow::before{
+    content:"";position:absolute;inset:0;background:var(--green);z-index:-1;
+    transform:scaleY(0);transform-origin:bottom;transition:transform .4s var(--ease);
+  }
+  .prow:hover::before{transform:scaleY(1);}
+  .prow:hover{color:#fff;}
+  .prow:hover .desc{color:rgba(255,255,255,.85);}
+  .prow:hover .arrow{transform:translateX(8px);}
+  .prow .idx{font-family:'Bricolage Grotesque';font-weight:700;font-size:1rem;opacity:.55;}
+  .prow h3{font-size:clamp(1.4rem,2.6vw,2rem);font-weight:700;}
+  .prow .desc{font-size:.92rem;color:#6b7d8f;margin-top:.3rem;transition:color .3s;}
+  .prow .arrow{font-size:1.6rem;transition:transform .35s var(--ease);}
+
+  /* ---------- posts ---------- */
+  .posts{display:grid;grid-template-columns:repeat(3,1fr);gap:1.8rem;}
+  .post{text-decoration:none;color:var(--ink);display:block;}
+  .post .ph{
+    aspect-ratio:4/3;border-radius:20px;margin-bottom:1.2rem;position:relative;overflow:hidden;
+    display:grid;place-items:center;
+  }
+  .post .ph svg{width:52px;height:52px;transition:transform .5s var(--ease);}
+  .post:hover .ph svg{transform:scale(1.15) rotate(-4deg);}
+  .post .meta{font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+  .post h3{font-size:1.25rem;font-weight:700;margin:.5rem 0 .4rem;line-height:1.25;}
+  .post .date{font-size:.85rem;color:#8a99a8;font-weight:500;}
+
+  /* ---------- donate band ---------- */
+  .band{background:var(--ink);color:var(--paper);padding:6rem 0;position:relative;overflow:hidden;}
+  .band .orb{
+    position:absolute;border-radius:50%;filter:blur(2px);opacity:.9;
+  }
+  .band .o1{width:340px;height:340px;background:var(--green);top:-140px;right:-80px;opacity:.28;}
+  .band .o2{width:220px;height:220px;background:var(--orange);bottom:-110px;left:8%;opacity:.22;}
+  .band h2{font-size:clamp(2.4rem,5vw,4.2rem);font-weight:800;line-height:1.03;max-width:22ch;}
+  .band h2 span{color:var(--green);}
+  .band p{margin:1.4rem 0 2.2rem;color:#b9c4cf;max-width:36rem;line-height:1.65;}
+  .band .btn{background:var(--green);color:#fff;font-size:1.05rem;padding:1.05rem 2.4rem;}
+  .band .btn:hover{background:#fff;color:var(--ink);}
+
+  /* ---------- footer ---------- */
+  footer{background:#12202e;color:#b9c4cf;padding:4rem 0 2rem;}
+  footer .cols{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:2.5rem;}
+  footer h5{color:#fff;font-family:'Bricolage Grotesque';font-size:1.05rem;margin-bottom:1.1rem;}
+  footer a{display:block;color:#b9c4cf;text-decoration:none;font-size:.92rem;padding:.28rem 0;transition:color .25s;}
+  footer a:hover{color:var(--green);}
+  footer p{font-size:.92rem;line-height:1.65;max-width:26rem;}
+  .newsline{display:flex;border-bottom:1.5px solid #3a4c5e;margin-top:1.2rem;max-width:300px;}
+  .newsline input{flex:1;background:none;border:0;color:#fff;padding:.7rem 0;font-family:'Inter';outline:none;min-width:0;}
+  .newsline input::placeholder{color:#5c6e80;}
+  .newsline button{background:none;border:0;color:var(--green);font-weight:700;cursor:pointer;font-family:'Inter';}
+  .fine{margin-top:3.4rem;padding-top:1.6rem;border-top:1px solid #26374a;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.8rem;font-size:.82rem;color:#5c6e80;}
+
+  .rise{opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease),transform .7s var(--ease);}
+  .rise.in{opacity:1;transform:none;}
+
+  @media (max-width:900px){
+    .top nav a:not(.give){display:none;}
+    .hero .grid,.split{grid-template-columns:1fr;}
+    .hero-side{text-align:left;}
+    .stats .row{grid-template-columns:1fr;}
+    .stat + .stat{border-left:0;padding-left:0;}
+    .posts{grid-template-columns:1fr;}
+    footer .cols{grid-template-columns:1fr 1fr;}
+    .prow{grid-template-columns:52px 1fr auto;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+    .rise{opacity:1;transform:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="wordmark"><span class="leaf"></span>IA LABS</div>
+    <nav>
+      <a href="#">About</a>
+      <a href="#">IA Vision</a>
+      <a href="#">Gallery</a>
+      <a href="#">Info</a>
+      <a href="#">Resources</a>
+      <a class="give" href="#">Give</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <div class="eyebrow rise">A veteran-led 501(c)(3) nonprofit</div>
+        <h1 class="rise">Hands-on STEM for the kids who need it <span class="grow">most.</span></h1>
+        <p class="lede rise">IA LABS brings robotics, STEM kits, and a mobile maker space to underserved communities across Houston — free programs for grades 4–10, built and taught by veterans.</p>
+        <div class="actions rise">
+          <a class="btn solid" href="#">Donate</a>
+          <a class="btn ghost" href="#">See our impact</a>
+        </div>
+      </div>
+      <div class="hero-side rise">
+        <div class="big" data-count="500">0</div>
+        <div class="cap">Lives impacted &amp; counting</div>
+      </div>
+    </div>
+    <div class="hero-banner rise">
+      <img src="assets/illustration-editorial.png" alt="Illustration of kids building a robot beside the IA LABS mobile maker space van">
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="wrap">
+    <div class="row">
+      <div class="stat rise">
+        <div class="n"><span data-count="500">0</span>+</div>
+        <div class="l">Young builders served through clubs, camps, and pop-ups.</div>
+      </div>
+      <div class="stat rise">
+        <div class="n"><span data-count="20">0</span>+</div>
+        <div class="l">Programs run with schools, HBCUs, and community partners.</div>
+      </div>
+      <div class="stat rise">
+        <div class="n"><span data-count="100">0</span>%</div>
+        <div class="l">Veteran-led — discipline and service powering every workshop.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blk">
+  <div class="wrap split">
+    <div class="rise">
+      <h2>We don't lecture.<br>We <em>build.</em></h2>
+      <p>Every IA LABS session starts with a pile of parts and ends with something that spins, lights up, or rolls. Kids learn engineering the way engineers do — by making a mess, making it work, and making it theirs.</p>
+      <div class="actions"><a class="btn ghost" href="#">Explore our programs</a></div>
+    </div>
+    <div class="rise clipword">Make.<br>Break.<br>Learn.</div>
+  </div>
+</section>
+
+<section class="blk tint">
+  <div class="wrap">
+    <div class="split" style="margin-bottom:3.5rem;">
+      <h2 class="rise" style="font-size:clamp(2rem,3.6vw,2.9rem);">Programs, <em style="font-style:normal;color:var(--green);">indexed.</em></h2>
+      <p class="rise" style="margin-top:0;">From weekend pop-up stands to semester-long robotics clubs — pick a lane, or try them all.</p>
+    </div>
+    <div class="plist">
+      <a class="prow rise" href="#">
+        <span class="idx">01</span>
+        <span><h3>Robotics Club</h3><span class="desc">Weekly builds — drive, code, compete. Grades 4–10.</span></span>
+        <span class="arrow">→</span>
+      </a>
+      <a class="prow rise" href="#">
+        <span class="idx">02</span>
+        <span><h3>STEM Kits</h3><span class="desc">Take-home projects: fans, LED labs, bridges, rockets.</span></span>
+        <span class="arrow">→</span>
+      </a>
+      <a class="prow rise" href="#">
+        <span class="idx">03</span>
+        <span><h3>Mobile Maker Space</h3><span class="desc">Our workshop van brings tools &amp; mentors to you.</span></span>
+        <span class="arrow">→</span>
+      </a>
+      <a class="prow rise" href="#">
+        <span class="idx">04</span>
+        <span><h3>Pop-Up Stands</h3><span class="desc">Weekend booth builds at community events.</span></span>
+        <span class="arrow">→</span>
+      </a>
+      <a class="prow rise" href="#">
+        <span class="idx">05</span>
+        <span><h3>HBCU Partnerships</h3><span class="desc">Mentorship pipelines with historically Black universities.</span></span>
+        <span class="arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="blk">
+  <div class="wrap">
+    <div class="split" style="margin-bottom:3rem;align-items:end;">
+      <h2 class="rise" style="font-size:clamp(2rem,3.6vw,2.9rem);">From the IA Vision journal</h2>
+      <a class="btn ghost rise" href="#" style="justify-self:end;">All stories</a>
+    </div>
+    <div class="posts">
+      <a class="post rise" href="#">
+        <div class="ph" style="background:#dbe9dc;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2e9e5b" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>
+        </div>
+        <span class="meta">Alternative Energy</span>
+        <h3>IA LABS Popsicle Fan Project</h3>
+        <span class="date">March 2025</span>
+      </a>
+      <a class="post rise" href="#">
+        <div class="ph" style="background:#d8e6e3;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#12836f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.6 4.6A2 2 0 1111 8H2m10.4 11.4A2 2 0 1014 16H2m7.6-5.8A2.5 2.5 0 1112 12H2"/></svg>
+        </div>
+        <span class="meta">Technology</span>
+        <h3>Windy Sticky Fan-tastic</h3>
+        <span class="date">February 2025</span>
+      </a>
+      <a class="post rise" href="#">
+        <div class="ph" style="background:#f2e3d4;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#e8722a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.7.5 1 1.4 1 2.1h5c0-.7.3-1.6 1-2.1A6 6 0 0012 3z"/></svg>
+        </div>
+        <span class="meta">Technology</span>
+        <h3>LED Light Lab</h3>
+        <span class="date">January 2025</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="wrap">
+    <h2 class="rise">Your gift becomes a <span>robot in a kid's hands.</span></h2>
+    <p class="rise">100% of donations fund programs in underserved communities — kits, parts, van fuel, and mentors. Admin costs are covered by our founders.</p>
+    <a class="btn rise" href="#">Donate via Square</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h5>IA LABS</h5>
+        <p>Where mad scientists are happy. A mobile maker space bringing free STEM education to underserved communities.</p>
+        <form class="newsline"><input type="email" placeholder="Email for updates" aria-label="Email"><button type="submit">Join</button></form>
+      </div>
+      <div>
+        <h5>Programs</h5>
+        <a href="#">Robotics Club</a><a href="#">STEM Kits</a><a href="#">Mobile Maker Space</a><a href="#">Pop-Up Stands</a>
+      </div>
+      <div>
+        <h5>Organization</h5>
+        <a href="#">About</a><a href="#">IA Vision</a><a href="#">Photo Gallery</a><a href="#">Resources</a>
+      </div>
+      <div>
+        <h5>Participate</h5>
+        <a href="#">Donate</a><a href="#">Event Registration</a><a href="#">Liability Waiver</a><a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="fine">
+      <span>© <span id="yr">2026</span> IA LABS. A 501(c)(3) nonprofit organization.</span>
+      <span>Houston, Texas · Founded by TSU alumni</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // count-up
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(!e.isIntersecting) return;
+      const el = e.target, target = +el.dataset.count, t0 = performance.now(), dur = 1600;
+      (function tick(t){
+        const p = Math.min((t-t0)/dur,1), ease = 1-Math.pow(1-p,4);
+        el.textContent = Math.round(target*ease);
+        if(p<1) requestAnimationFrame(tick);
+      })(t0);
+      io.unobserve(el);
+    });
+  },{threshold:.5});
+  document.querySelectorAll('[data-count]').forEach(el=>io.observe(el));
+
+  // reveal
+  const rio = new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target);}}),{threshold:.12});
+  document.querySelectorAll('.rise').forEach(el=>rio.observe(el));
+
+  document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
